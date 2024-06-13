@@ -1,0 +1,22 @@
+server:
+  port: 8888
+spring:
+  application:
+    name: pryeureka-configserver
+  cloud:
+    # conectarse al repositorio y extrae todos los archivos de configuración que hay
+    config:
+      server:
+        git:
+          uri: https://github.com/neosapiens8/pry306-configdata-tecsup
+          default-label: main # rama
+          clone-on-start: true
+          force-pull: true
+      discovery:
+        enable: false
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761
+    register-with-eureka: true
+    fetch-registry: true
