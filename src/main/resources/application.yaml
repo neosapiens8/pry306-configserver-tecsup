@@ -1,22 +1,34 @@
 server:
-  port: 8888
+  port: 8888 # puerto de acceso
+
 spring:
   application:
-    name: pryeureka-configserver
-  cloud:
-    # conectarse al repositorio y extrae todos los archivos de configuración que hay
+    name: wconfigserver # nombre de la aplicación en un entorno Spring para microservicios
+  cloud: # conectarse al repositorio y extrae todos los archivos de configuración que hay
     config:
       server:
         git:
-          uri: https://github.com/neosapiens8/pry306-configdata-tecsup
-          default-label: main # rama
-          clone-on-start: true
-          force-pull: true
+          uri: https://github.com/neosapiens8/pry306-configdata-tecsup.git # URI del servidor Git
+          default-label: main # rama del repositorio Git que se usará
+          clone-on-start: true # dice al Config Server que clone el repositorio Git cuando el servidor se inicia
+          force-pull: true # dice al Config Server que realice un "git pull" para obtener los cambios más recientes del repositorio Git, incluso si ya tiene una copia local
       discovery:
-        enable: false
+        enable: false # No utilizar un servidor de descubrimiento para encontrar el repositorio de configuración
+
 eureka:
   client:
-    serviceUrl:
-      defaultZone: http://localhost:8761
-    register-with-eureka: true
-    fetch-registry: true
+    service-url: # especifica URLs de los servidores Eureka donde el cliente debe registrarse y desde donde debe recuperar la información del registro de servicios
+      defaultZone: http://localhost:8761/eureka/ # URL del servidor Eureka donde este cliente debe registrarse y desde donde debe obtener información de otros servicios registrados
+    register-with-eureka: true # indica si el cliente de Eureka (en este caso, tu aplicación Spring Boot) debe registrarse en el servidor de Eureka
+    fetch-registry: true # indica si al conectarnos al servidor jalara la lista de otros mictoservicios (resolver sus ubicaciones)
+
+# Para desactivar configuración CLOUD que requiere git-uri para obtener configuraciones
+#Spring:
+#  profiles:
+#    # active o include
+#    active: native # establece el perfil activo de la aplicación Spring Boot como "native" ("native" indica que las configuraciones se obtendrán de ubicaciones locales)
+#  cloud:
+#    config:
+#      server: # Indica que las configuraciones son específicas para el servidor de configuración de Spring Cloud
+#        native:
+#          search-locations: classpath:/config # ubicación de archivos de configuración para el perfil "native"
